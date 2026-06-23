@@ -5,9 +5,9 @@ import { CONTACT, NAV, SERVICES } from "@/data/site";
 
 export function Footer() {
   return (
-    <footer className="bg-navy-deep text-white/80 pt-20 pb-8 mt-32">
-      <div className="container-px mx-auto max-w-7xl grid gap-12 md:grid-cols-2 lg:grid-cols-4">
-        <div>
+    <footer className="bg-navy-deep text-white/80 pt-20 pb-28 lg:pb-8 mt-32">
+      <div className="container-px mx-auto max-w-7xl grid grid-cols-2 gap-12 md:grid-cols-2 lg:grid-cols-4">
+        <div className="col-span-2 md:col-span-1">
           <Logo variant="light" size="md" />
           <p className="mt-5 text-sm leading-relaxed text-white/70">
             Transforming spaces into stunning masterpieces — interior and exterior decoration crafted with elegance and precision.
@@ -26,7 +26,7 @@ export function Footer() {
           </div>
         </div>
 
-        <div>
+        <div className="col-span-1">
           <h4 className="text-white text-lg font-display mb-5">Quick Links</h4>
           <ul className="space-y-3 text-sm">
             {NAV.map((n) => (
@@ -37,7 +37,7 @@ export function Footer() {
           </ul>
         </div>
 
-        <div>
+        <div className="col-span-1">
           <h4 className="text-white text-lg font-display mb-5">Services</h4>
           <ul className="space-y-3 text-sm">
             {SERVICES.map((s) => (
@@ -46,7 +46,7 @@ export function Footer() {
           </ul>
         </div>
 
-        <div>
+        <div className="col-span-2 md:col-span-1">
           <h4 className="text-white text-lg font-display mb-5">Contact</h4>
           <ul className="space-y-4 text-sm">
             <li className="flex gap-3"><Phone size={16} className="text-gold mt-0.5 shrink-0" />

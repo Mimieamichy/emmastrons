@@ -140,7 +140,7 @@ export function WhyUsSection() {
           title="The Emmastrons difference"
           subtitle="Six commitments that have made us the trusted partner for hundreds of clients."
         />
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid grid-cols-2 gap-4 sm:gap-6 lg:grid-cols-3">
           {WHY_US.map((w, i) => {
             const Icon = w.icon;
             return (
@@ -150,7 +150,7 @@ export function WhyUsSection() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.06, duration: 0.5 }}
-                className="bg-card p-8 rounded-2xl border border-border hover:border-gold hover:-translate-y-1 hover:shadow-luxury transition-all duration-300 group"
+                className="bg-card p-4 sm:p-8 rounded-2xl border border-border hover:border-gold hover:-translate-y-1 hover:shadow-luxury transition-all duration-300 group"
               >
                 <div className="h-12 w-12 rounded-full bg-gold/10 grid place-items-center text-gold-deep group-hover:bg-gradient-gold group-hover:text-navy group-hover:scale-110 group-hover:rotate-6 transition-all duration-500">
                   <Icon size={22} />

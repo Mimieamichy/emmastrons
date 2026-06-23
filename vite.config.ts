@@ -6,9 +6,5 @@ export default defineConfig({
   },
   nitro: {
     preset: "vercel",
-    output: {
-      // Explicitly pointing Nitro to your public directory
-      publicDir: "public" 
-    }
-  },
+  }
 });
