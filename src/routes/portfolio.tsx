@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { X, Loader2 } from "lucide-react";
 import { PageHero } from "@/components/layout/PageHero";
 
-const CLOUDINARY_URL = "https://res.cloudinary.com/dkhigmasd/image/list/porfolio.json";
+const CLOUDINARY_URL = "";
 const CLOUD_NAME = "dkhigmasd";
 const ITEMS_PER_PAGE = 50;
 
