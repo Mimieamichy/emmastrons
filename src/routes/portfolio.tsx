@@ -145,6 +145,13 @@ function Portfolio() {
         throw new Error("No portfolio resources found in Cloudinary");
       }
 
+      // Sort so videos appear at the top
+      items.sort((a, b) => {
+        if (a.type === "video" && b.type !== "video") return -1;
+        if (a.type !== "video" && b.type === "video") return 1;
+        return 0;
+      });
+
       return items;
     },
   });
