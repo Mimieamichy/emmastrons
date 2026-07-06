@@ -41,7 +41,7 @@ function Contact() {
         eyebrow="Contact"
         title="Let's design something extraordinary."
         subtitle="Tell us about your project. We'll get back to you within one business day."
-        image="/portfolioTwo.jpg"
+        image="/home1.jpeg"
       />
 
       <section className="py-24 container-px mx-auto max-w-7xl grid lg:grid-cols-5 gap-12">
@@ -110,7 +110,7 @@ function Contact() {
           <div className="rounded-2xl overflow-hidden border border-border h-64 bg-secondary relative">
             <iframe
               title="Office location"
-              src="https://www.openstreetmap.org/export/embed.html?bbox=7.45%2C9.05%2C7.55%2C9.10&layer=mapnik"
+              src="https://www.openstreetmap.org/export/embed.html?bbox=3.65%2C6.45%2C3.95%2C6.55&layer=mapnik"
               className="absolute inset-0 w-full h-full"
               loading="lazy"
             />

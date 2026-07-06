@@ -9,7 +9,7 @@ export const CONTACT = {
   phone2: "09033290425",
   email: "emmastrons@gmail.com",
   whatsapp: "2347042054107",
-  address: "Lagos, Nigeria — available nationwide & worldwide",
+  address: "Ibeju-Lekki, Lagos, Nigeria — available nationwide & worldwide",
   hours: "Mon – Sat: 8:00 AM – 6:00 PM",
 };
 

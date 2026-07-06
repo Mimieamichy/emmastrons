@@ -6,6 +6,7 @@ import { X, Loader2 } from "lucide-react";
 import { PageHero } from "@/components/layout/PageHero";
 
 const CLOUDINARY_URL = "https://res.cloudinary.com/dkhigmasd/image/list/porfolio.json";
+const CLOUDINARY_VIDEOS_URL = "https://res.cloudinary.com/dkhigmasd/video/list/videos.json";
 const CLOUD_NAME = "dkhigmasd";
 const ITEMS_PER_PAGE = 50;
 
@@ -51,34 +52,100 @@ function Portfolio() {
   const { data: portfolio, isLoading, error } = useQuery({
     queryKey: ["cloudinary-portfolio"],
     queryFn: async (): Promise<PortfolioItem[]> => {
-      console.log("Fetching from:", CLOUDINARY_URL);
-      const response = await fetch(CLOUDINARY_URL);
-      console.log("Response status:", response.status);
-      if (!response.ok) {
-        throw new Error(`Failed to fetch portfolio data: ${response.status} ${response.statusText}`);
+      console.log("Fetching from:", CLOUDINARY_URL, "and", CLOUDINARY_VIDEOS_URL);
+      
+      // Fetch both resource lists in parallel using Promise.allSettled to be resilient
+      const [imgResponse, vidResponse] = await Promise.allSettled([
+        fetch(CLOUDINARY_URL),
+        fetch(CLOUDINARY_VIDEOS_URL)
+      ]);
+      
+      let imageResources: CloudinaryResource[] = [];
+      let videoResources: CloudinaryResource[] = [];
+      
+      if (imgResponse.status === "fulfilled") {
+        console.log("Image API Response Status:", imgResponse.value.status);
+        if (imgResponse.value.ok) {
+          try {
+            const imgData: CloudinaryResponse = await imgResponse.value.json();
+            console.log("Image API Data Received:", imgData);
+            imageResources = imgData.resources || [];
+          } catch (e) {
+            console.error("Error parsing image JSON:", e);
+          }
+        } else {
+          console.warn(`Image API returned non-OK status: ${imgResponse.value.status} ${imgResponse.value.statusText}`);
+        }
+      } else {
+        console.error("Image API Fetch Rejected:", imgResponse.reason);
       }
-      const data: CloudinaryResponse = await response.json();
-      console.log("Cloudinary data:", data);
 
-      if (!data.resources || data.resources.length === 0) {
-        throw new Error("No resources found in Cloudinary response");
+      if (vidResponse.status === "fulfilled") {
+        console.log("Video API Response Status:", vidResponse.value.status);
+        if (vidResponse.value.ok) {
+          try {
+            const vidData: CloudinaryResponse = await vidResponse.value.json();
+            console.log("Video API Data Received:", vidData);
+            videoResources = vidData.resources || [];
+          } catch (e) {
+            console.error("Error parsing video JSON:", e);
+          }
+        } else {
+          console.warn(`Video API returned non-OK status: ${vidResponse.value.status} ${vidResponse.value.statusText}`);
+        }
+      } else {
+        console.error("Video API Fetch Rejected:", vidResponse.reason);
       }
 
-      // Transform Cloudinary resources to portfolio items
-      return data.resources.map((resource, index) => {
-        const isVideo = ["mp4", "mov", "avi", "webm"].includes(resource.format.toLowerCase());
-        // Convert HEIC to JPG for better browser support
-        const displayFormat = ["heic"].includes(resource.format.toLowerCase()) ? "jpg" : resource.format.toLowerCase();
-        // Construct the Cloudinary URL
-        const url = `https://res.cloudinary.com/${CLOUD_NAME}/image/upload/${resource.public_id}.${displayFormat}`;
-        return {
+      const items: PortfolioItem[] = [];
+      const seenIds = new Set<string>();
+
+      // Process image list resources
+      imageResources.forEach((resource) => {
+        if (seenIds.has(resource.public_id)) return;
+        seenIds.add(resource.public_id);
+
+        const formatLower = (resource.format || "").toLowerCase();
+        const isVideo = ["mp4", "mov", "avi", "webm"].includes(formatLower);
+        const resourceType = isVideo ? "video" : "image";
+        
+        // Construct the Cloudinary URL using f_auto,q_auto.
+        // We append the original format extension (resource.format) so Cloudinary parses the public ID
+        // correctly if it contains dots, while f_auto handles the browser-side format transcoding.
+        const url = `https://res.cloudinary.com/${CLOUD_NAME}/${resourceType}/upload/f_auto,q_auto/${resource.public_id}.${resource.format || "jpg"}`;
+        items.push({
           id: resource.public_id,
           image: url,
-          title: `Project ${index + 1}`,
-          category: "Interior",
+          title: `Project ${items.length + 1}`,
+          category: isVideo ? "Video" : "Interior",
           type: isVideo ? "video" : "image",
-        };
+        });
       });
+
+      // Process video list resources
+      videoResources.forEach((resource) => {
+        if (seenIds.has(resource.public_id)) return;
+        seenIds.add(resource.public_id);
+
+        const isVideo = true;
+        const resourceType = "video";
+        
+        // Construct the Cloudinary URL using f_auto,q_auto with the original video format extension
+        const url = `https://res.cloudinary.com/${CLOUD_NAME}/${resourceType}/upload/f_auto,q_auto/${resource.public_id}.${resource.format || "mp4"}`;
+        items.push({
+          id: resource.public_id,
+          image: url,
+          title: `Project ${items.length + 1}`,
+          category: "Video",
+          type: "video",
+        });
+      });
+
+      if (items.length === 0) {
+        throw new Error("No portfolio resources found in Cloudinary");
+      }
+
+      return items;
     },
   });
 
@@ -90,6 +157,10 @@ function Portfolio() {
 
   const handleLoadMore = () => {
     setItemsToShow(prev => prev + ITEMS_PER_PAGE);
+  };
+
+  const handleLoadLess = () => {
+    setItemsToShow(ITEMS_PER_PAGE);
   };
 
   useEffect(() => {
@@ -108,7 +179,7 @@ function Portfolio() {
         eyebrow="Portfolio"
         title="Where craft becomes character."
         subtitle="A curated selection of our recent interior and exterior projects across Nigeria."
-        image="/portfolioFive.jpg"
+        image="/home3.jpeg"
       />
 
       <section className="py-20 container-px mx-auto max-w-7xl">
@@ -132,9 +203,9 @@ function Portfolio() {
               {displayedItems.map((p, i) => (
                 <motion.figure
                   key={p.id}
-                  initial={isMounted ? { opacity: 0, y: 30 } : false}
-                  animate={isMounted ? { opacity: 1, y: 0 } : {}}
-                  transition={{ duration: 0.45, delay: i * 0.05 }}
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.45, delay: isMounted ? i * 0.05 : 0 }}
                   onClick={() => setLightbox(p.image)}
                   className="group relative break-inside-avoid cursor-pointer overflow-hidden rounded-2xl bg-card"
                 >
@@ -173,16 +244,27 @@ function Portfolio() {
                 </motion.figure>
               ))}
             </div>
-            {hasMoreItems && (
+            {hasMoreItems ? (
               <div className="flex justify-center mt-12">
                 <button
                   onClick={handleLoadMore}
-                  className="group inline-flex items-center gap-2 bg-gradient-gold text-navy font-semibold px-8 py-4 rounded-full shadow-gold hover:-translate-y-0.5 hover:scale-[1.03] active:scale-95 hover:shadow-luxury transition-all duration-300"
+                  className="group inline-flex items-center gap-2 bg-gradient-gold text-navy font-semibold px-8 py-4 rounded-full shadow-gold hover:-translate-y-0.5 hover:scale-[1.03] active:scale-95 hover:shadow-luxury transition-all duration-300 cursor-pointer"
                 >
                   Load More
                   <Loader2 className="w-5 h-5 group-hover:animate-spin" />
                 </button>
               </div>
+            ) : (
+              portfolio && portfolio.length > ITEMS_PER_PAGE && (
+                <div className="flex justify-center mt-12">
+                  <button
+                    onClick={handleLoadLess}
+                    className="group inline-flex items-center gap-2 bg-navy-deep text-white border border-white/20 font-semibold px-8 py-4 rounded-full hover:bg-gold hover:text-navy hover:border-gold transition-all duration-300 cursor-pointer"
+                  >
+                    Load Less
+                  </button>
+                </div>
+              )
             )}
           </>
         )}

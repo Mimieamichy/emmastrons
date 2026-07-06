@@ -4,9 +4,9 @@ import { Link } from "@tanstack/react-router";
 import { ArrowRight, Play } from "lucide-react";
 
 const slides = [
-  { img: "/heroOne.jpg", alt: "Luxury living room interior" },
-  { img: "/heroTwo.jpg", alt: "Premium home exterior at dusk" },
-  { img: "/heroThree.jpg", alt: "Elegant master bedroom" },
+  { img: "/home2.jpeg", alt: "Luxury living room interior" },
+  { img: "/home4.jpeg", alt: "Premium home exterior at dusk" },
+  { img: "/home5.jpeg", alt: "Elegant master bedroom" },
 ];
 
 export function HomeHero() {

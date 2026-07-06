@@ -16,7 +16,7 @@ export function AboutTeaser() {
           className="relative"
         >
           <img
-            src="/portfolioTwo.jpg"
+            src="/home3.jpeg"
             alt="Interior desgn"
             className="rounded-2xl shadow-luxury w-full aspect-[4/5] object-cover"
 
@@ -80,7 +80,7 @@ export function StatsBar() {
   );
 }
 
-export function ServicesGrid({ heading = true }: { heading?: boolean }) {
+export function ServicesGrid({ heading = true, showLearnMore = true }: { heading?: boolean; showLearnMore?: boolean }) {
   return (
     <section className="py-24 container-px mx-auto max-w-7xl">
       {heading && (
@@ -116,12 +116,14 @@ export function ServicesGrid({ heading = true }: { heading?: boolean }) {
                   </li>
                 ))}
               </ul>
-              <Link
-                to="/services"
-                className="mt-6 inline-flex items-center gap-1 text-sm font-semibold text-navy hover:text-gold-deep hover:gap-2 transition-all duration-300"
-              >
-                Learn More <ArrowRight size={14} className="transition-transform duration-300 group-hover:translate-x-1" />
-              </Link>
+              {showLearnMore && (
+                <Link
+                  to="/services"
+                  className="mt-6 inline-flex items-center gap-1 text-sm font-semibold text-navy hover:text-gold-deep hover:gap-2 transition-all duration-300"
+                >
+                  Learn More <ArrowRight size={14} className="transition-transform duration-300 group-hover:translate-x-1" />
+                </Link>
+              )}
             </motion.article>
           );
         })}

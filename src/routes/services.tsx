@@ -18,9 +18,9 @@ export const Route = createFileRoute("/services")({
         eyebrow="Services"
         title="Comprehensive design & decoration."
         subtitle="From a single room refresh to full architectural transformations — delivered to one standard: exceptional."
-        image="/heroThree.jpg"
+        image="/home5.jpeg"
       />
-      <ServicesGrid heading={false} />
+      <ServicesGrid heading={false} showLearnMore={false} />
       <WhyUsSection />
       <CTASection />
     </>

@@ -31,7 +31,7 @@ function About() {
         eyebrow="About"
         title="A studio built on craft, taste, and trust."
         subtitle="For over a decade, Emmastrons has shaped homes, offices, and hotels across Nigeria — pairing classical elegance with contemporary discipline."
-        image="/heroOne.jpg"
+        image="/home4.jpeg"
       
       />
 
